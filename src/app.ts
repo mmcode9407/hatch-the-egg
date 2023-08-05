@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', function () {
 	const result = document.querySelector(
 		'#result'
 	) as HTMLParagraphElement | null;
+	const actionButton = document.querySelector(
+		'#action-btn'
+	) as HTMLButtonElement | null;
 
 	const game = new Game();
 
@@ -15,5 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		eggElement: egg,
 		counterElement: counter,
 		resultElement: result,
+		actionButtonElement: actionButton,
 	});
 });

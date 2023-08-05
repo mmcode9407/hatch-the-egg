@@ -3,6 +3,7 @@ export class Game {
     constructor() {
         this.eggElement = null;
         this.resultElement = null;
+        this.actionButtonElement = null;
         this.counterElement = null;
         this.stopWatch = null;
         this.secondsPassed = 0;
@@ -18,6 +19,7 @@ export class Game {
         this.counterElement = params.counterElement;
         this.eggElement = params.eggElement;
         this.resultElement = params.resultElement;
+        this.actionButtonElement = params.actionButtonElement;
         this.displayEggClicks();
         this.mountEgg();
     }
@@ -31,6 +33,25 @@ export class Game {
         this.stopWatch = setInterval(() => {
             this.secondsPassed = this.secondsPassed + 100;
         }, 100);
+    }
+    showResetButton() {
+        if (!this.actionButtonElement) {
+            throw Error('Action button is not found');
+        }
+        this.actionButtonElement.innerText = 'Restart';
+        this.actionButtonElement.classList.remove('hidden');
+        this.actionButtonElement.addEventListener('click', () => {
+            this.restartGame();
+        });
+    }
+    hideResetButton() {
+        if (!this.actionButtonElement) {
+            throw new Error('Action button element not found');
+        }
+        this.actionButtonElement.classList.add('hidden');
+        this.actionButtonElement.removeEventListener('click', () => {
+            this.restartGame();
+        });
     }
     stopStopWatch() {
         if (!this.stopWatch) {
@@ -47,7 +68,7 @@ export class Game {
                 break;
         }
     }
-    mountEgg() {
+    displayEgg() {
         if (!this.eggElement) {
             throw new Error('Egg element not found');
         }
@@ -56,6 +77,12 @@ export class Game {
             throw new Error('Egg image src not found');
         }
         this.eggElement.src = eggImageSrc;
+    }
+    mountEgg() {
+        if (!this.eggElement) {
+            throw new Error('Egg element not found');
+        }
+        this.displayEgg();
         this.eggElement.addEventListener('click', this.updateEggClick.bind(this));
     }
     hatchEgg() {
@@ -66,12 +93,29 @@ export class Game {
         if (!eggImageSrc) {
             throw new Error('Egg image src not found');
         }
+        this.eggElement.src = eggImageSrc;
         if (!this.resultElement) {
             throw new Error('Result element not found');
         }
-        this.eggElement.src = eggImageSrc;
         this.resultElement.innerText =
             (this.secondsPassed / 1000).toString() + ' seconds';
         this.stopStopWatch();
+        this.showResetButton();
+    }
+    displayResult() {
+        if (!this.resultElement) {
+            throw new Error('Result element not found');
+        }
+        this.resultElement.innerText = !!this.secondsPassed
+            ? (this.secondsPassed / 1000).toString() + ' seconds'
+            : '';
+    }
+    restartGame() {
+        this.secondsPassed = 0;
+        this.displayResult();
+        this.eggInstance.eggClicks = 0;
+        this.displayEggClicks();
+        this.displayEgg();
+        this.hideResetButton();
     }
 }
