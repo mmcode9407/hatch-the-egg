@@ -3,6 +3,8 @@ export class Game {
     constructor() {
         this.eggElement = null;
         this.counterElement = null;
+        this.stopWatch = null;
+        this.secondsPassed = 0;
         this.eggInstance = new Egg();
     }
     init(params) {
@@ -12,7 +14,7 @@ export class Game {
         this.counterElement = params.counterElement;
         this.eggElement = params.eggElement;
         this.displayEggClicks();
-        this.displayEgg();
+        this.mountEgg();
     }
     displayEggClicks() {
         if (!this.counterElement) {
@@ -20,7 +22,21 @@ export class Game {
         }
         this.counterElement.innerText = String(this.eggInstance.eggClicks);
     }
-    displayEgg() {
+    startStopWatch() {
+        this.stopWatch = setInterval(() => {
+            this.secondsPassed++;
+        }, 1000);
+    }
+    updateEggClick() {
+        this.eggInstance.tapEgg();
+        this.displayEggClicks();
+        switch (this.eggInstance.eggClicks) {
+            case 1:
+                this.startStopWatch();
+                break;
+        }
+    }
+    mountEgg() {
         if (!this.eggElement) {
             throw new Error('Egg element not found');
         }
@@ -29,5 +45,6 @@ export class Game {
             throw new Error('Egg image src not found');
         }
         this.eggElement.src = eggImageSrc;
+        this.eggElement.addEventListener('click', this.updateEggClick.bind(this));
     }
 }
