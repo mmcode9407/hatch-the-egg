@@ -5,8 +5,15 @@ document.addEventListener('DOMContentLoaded', function () {
 		'#counter'
 	) as HTMLParagraphElement | null;
 	const egg = document.querySelector('#egg') as HTMLImageElement | null;
+	const result = document.querySelector(
+		'#result'
+	) as HTMLParagraphElement | null;
 
 	const game = new Game();
 
-	game.init({ eggElement: egg, counterElement: counter });
+	game.init({
+		eggElement: egg,
+		counterElement: counter,
+		resultElement: result,
+	});
 });
