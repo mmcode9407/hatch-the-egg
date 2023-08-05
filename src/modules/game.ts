@@ -10,6 +10,8 @@ interface IGame extends GameParams {}
 export class Game implements IGame {
 	eggElement: HTMLImageElement | null = null;
 	counterElement: HTMLParagraphElement | null = null;
+	stopWatch: number | null = null;
+	secondsPassed: number = 0;
 	eggInstance: Egg = new Egg();
 
 	init(params: GameParams) {
@@ -20,7 +22,7 @@ export class Game implements IGame {
 		this.counterElement = params.counterElement;
 		this.eggElement = params.eggElement;
 		this.displayEggClicks();
-		this.displayEgg();
+		this.mountEgg();
 	}
 
 	displayEggClicks() {
@@ -31,7 +33,24 @@ export class Game implements IGame {
 		this.counterElement.innerText = String(this.eggInstance.eggClicks);
 	}
 
-	displayEgg() {
+	startStopWatch() {
+		this.stopWatch = setInterval(() => {
+			this.secondsPassed++;
+		}, 1000);
+	}
+
+	updateEggClick() {
+		this.eggInstance.tapEgg();
+		this.displayEggClicks();
+
+		switch (this.eggInstance.eggClicks) {
+			case 1:
+				this.startStopWatch();
+				break;
+		}
+	}
+
+	mountEgg() {
 		if (!this.eggElement) {
 			throw new Error('Egg element not found');
 		}
@@ -43,5 +62,6 @@ export class Game implements IGame {
 		}
 
 		this.eggElement.src = eggImageSrc;
+		this.eggElement.addEventListener('click', this.updateEggClick.bind(this));
 	}
 }
